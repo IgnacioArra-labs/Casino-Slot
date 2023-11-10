@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Tragamonedas</title>
+    <style>
+        body {
+            background-color: #0c0c0c;
+            font-family: Arial, sans-serif;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            margin: 0;
+        }
+
+        #slot-machine {
+            background-color: #121212;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.5);
+            text-align: center;
+            color: #fff;
+        }
+
+        #reels {
+            display: flex;
+            justify-content: space-between; /* Espacio entre los reels */
+            margin-top: 60px;
+        }
+
+        .reel {
+            width: 120px;
+            height: 120px;
+            border: 2px solid #fff;
+            border-radius: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 48px;
+            cursor: pointer;
+            position: relative; 
+        }
+
+        .separator {
+            width: 20px; 
+        }
+
+        .balance-text {
+            position: absolute;
+            bottom: 5px; 
+            right: 5px; 
+            color: green; 
+            font-size: 12px; 
+            font-family: Arial, sans-serif; 
+        }
+
+        #buttons {
+            margin-top: 20px;
+            display: flex;
+            justify-content: center;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        button {
+            padding: 10px 20px;
+            font-size: 18px;
+            margin: 10px;
+            background-color: #0078d4;
+            border: none;
+            border-radius: 20px;
+            color: #fff;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+    <div id="slot-machine">
+        <h1 style="color: #fff;">&#x1F911;¡Hazla Girar!&#x1F911;</h1>
+        <div id="reels">
+            <div class="reel" style="background-color: #ff5252;">🍒</div>
+            <div class="separator"></div> <!-- Espacio entre símbolos -->
+            <div class="reel" style="background-color: #ffea00;">🍊</div>
+            <div class="separator"></div> <!-- Espacio entre símbolos -->
+            <div class="reel" style="background-color: #42a5f5;">🍇</div>
+        </div>
+        <div id="buttons">
+            <button id="addMoney" style="background-color: #ff9800;">💰 Cargar Dinero</button>
+            <button id="withdrawMoney" style="background-color: #f44336;">🏧 Retirar Dinero</button>
+        </div>
+        <div class="balance-text" style="color: green;">Saldo: 1000 ARS</div>
+    </div>
+
+    <script>
+        let balance = 1000;
+        let betAmount = 100;
+
+        function spinReels() {
+            if (balance >= betAmount) {
+                const symbols = ["🍒", "🍊", "🍇"];
+                const reels = document.querySelectorAll('.reel');
+                
+                reels.forEach((reel) => {
+                    const result = symbols[Math.floor(Math.random() * symbols.length)];
+                    reel.textContent = result;
+                });
+
+                if (reels[0].textContent === reels[1].textContent && reels[1].textContent === reels[2].textContent) {
+                    balance += betAmount;
+                    betAmount *= 2;
+                    if (betAmount > 1000) {
+                        betAmount = 1000;
+                    }
+                } else {
+                    balance -= betAmount;
+                    betAmount = 100;
+                }
+
+                document.querySelectorAll('.balance-text').forEach((text) => {
+                    text.textContent = `Saldo: ${balance} ARS`;
+                });
+            } else {
+                alert("No tienes suficiente saldo para continuar jugando.");
+            }
+        }
+
+        document.querySelectorAll('.reel').forEach((reel) => {
+            reel.addEventListener('click', spinReels);
+        });
+
+        document.addEventListener('keydown', function(event) {
+            if (event.keyCode === 32) { // Tecla espacio
+                spinReels();
+            }
+        });
+
+        document.getElementById('addMoney').addEventListener('click', () => {
+            balance += 1000;
+            document.querySelectorAll('.balance-text').forEach((text) => {
+                text.textContent = `Saldo: ${balance} ARS`;
+            });
+        });
+
+        document.getElementById('withdrawMoney').addEventListener('click', () => {
+            alert(`Has retirado ${balance} ARS.`);
+            balance = 0;
+            document.querySelectorAll('.balance-text').forEach((text) => {
+                text.textContent = `Saldo: 0 ARS`;
+            });
+        });
+    </script>
+</body>
+</html>
